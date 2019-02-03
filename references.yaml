@@ -1,0 +1,70 @@
+- abbrev_journal_title: Phys. Rev. A
+  author: Lawson, Thomas and Pappa, Anna and Bourdoncle, Boris and Kerenidis, Iordanis
+    and Markham, Damian and Diamanti, Eleni
+  author_list:
+  - given_name: Thomas
+    surname: Lawson
+  - given_name: Anna
+    surname: Pappa
+  - given_name: Boris
+    surname: Bourdoncle
+  - given_name: Iordanis
+    surname: Kerenidis
+  - given_name: Damian
+    surname: Markham
+  - given_name: Eleni
+    surname: Diamanti
+  citations:
+  - doi: 10.1103/RevModPhys.81.865
+  - doi: 10.1103/PhysRevLett.108.240501
+  - doi: 10.1088/1742-6596/84/1/012010
+  - doi: 10.1103/PhysRevA.75.012336
+  - doi: 10.1103/PhysRevA.84.062305
+  - doi: 10.1103/PhysRevLett.100.140403
+  - doi: 10.1103/PhysRevA.84.062306
+  - doi: 10.1103/PhysRevLett.66.1119
+  - doi: 10.1103/PhysRevA.82.012304
+  - doi: 10.1103/PhysRevLett.95.240407
+  - doi: 10.1103/PhysRevLett.98.140505
+  - doi: 10.1103/PhysRevLett.88.217901
+  - doi: 10.1016/j.physleta.2009.03.009
+  - doi: 10.1103/PhysRevA.78.042308
+  - doi: 10.1103/PhysRevA.67.022110
+  - doi: 10.1103/PhysRevLett.109.120403
+  - doi: 10.1103/PhysRevA.90.012115
+  - doi: 10.1088/1367-2630/15/12/123026
+  - doi: 10.1103/PhysRevLett.106.230501
+  - doi: 10.1103/PhysRevLett.104.157201
+  - doi: 10.1103/PhysRevLett.89.127902
+  doc_url: http://harvest.aps.org/v2/journals/articles/10.1103/PhysRevA.90.042336/fulltext
+  doi: 10.1103/PhysRevA.90.042336
+  files:
+  - phys.-rev.-a-2014-lawson.pdf.pdf
+  full_journal_title: Physical Review A
+  issue: '4'
+  journal: Physical Review A
+  ref: 10.1103/PhysRevA.90.042336
+  title: Reliable experimental quantification of bipartite entanglement without reference
+    frames
+  url: http://link.aps.org/article/10.1103/PhysRevA.90.042336
+  volume: '90'
+  year: '2014'
+- abbrev_journal_title: null
+  author: Shannon, C. E.
+  author_list:
+  - given_name: C. E.
+    surname: Shannon
+  citations: []
+  doi: 10.1002/j.1538-7305.1948.tb01338.x
+  files:
+  - entropy.pdf.pdf
+  first_page: '379'
+  full_journal_title: Bell System Technical Journal
+  issue: '3'
+  journal: Bell System Technical Journal
+  last_page: '423'
+  pages: 379--423
+  ref: 10.1002/j.1538-7305.1948.tb01338.x
+  title: A Mathematical Theory of Communication
+  volume: '27'
+  year: '1948'
