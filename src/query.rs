@@ -6,7 +6,7 @@ use serde_yaml::Value;
 /// and the outer vector contains the number of different strings that will be built
 #[derive(Debug, PartialEq)]
 pub struct QueryData {
-    strings: Vec<String>,
+    pub strings: Vec<String>,
 }
 
 impl QueryData {
@@ -21,13 +21,18 @@ impl QueryData {
                         Some(v) => v.as_str().unwrap_or(""),
                         None => "",
                     })
-                    .collect::<Vec<&str>>()
+                    .collect::<Vec<_>>()
                     .join("\n");
+
                 s.truncate(1024); // truncate search string to 1024 characters, as rff has that as a maximum
                 s
             })
             .collect();
         QueryData { strings: strings }
+    }
+
+    pub fn len(&self) -> usize {
+        self.strings.len()
     }
 }
 
