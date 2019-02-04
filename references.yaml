@@ -68,3 +68,253 @@
   title: A Mathematical Theory of Communication
   volume: '27'
   year: '1948'
+- abstract: 'We determine the set of the Bloch vectors for N-level systems, generalizing
+
+  the familiar Bloch ball in 2-level systems. An origin of the structural
+
+  difference from the Bloch ball in 2-level systems is clarified.'
+  archiveprefix: arXiv
+  author: Gen Kimura
+  doi: 10.1016/S0375-9601(03)00941-1
+  eprint: quant-ph/0301152v2
+  file: quant-ph/0301152v2.pdf
+  files:
+  - tmp1bs3g28s.pdf
+  month: Jan
+  note: Phys. Lett. A 314, 339 (2003)
+  primaryclass: quant-ph
+  ref: quant-ph/0301152v2
+  title: The Bloch Vector for N-Level Systems
+  type: article
+  url: http://arxiv.org/abs/quant-ph/0301152v2
+  year: '2003'
+- abbrev_journal_title: Phys. Rev.
+  author: Bohm, D. and Aharonov, Y.
+  author_list:
+  - given_name: D.
+    surname: Bohm
+  - given_name: Y.
+    surname: Aharonov
+  citations:
+  - doi: 10.1103/PhysRev.47.777
+  - doi: 10.1103/PhysRev.49.393
+  - doi: 10.1103/PhysRev.48.696
+  - doi: 10.1103/PhysRev.85.166
+  - doi: 10.1103/PhysRev.85.180
+  - doi: 10.4324/9780203201107
+  - doi: 10.1103/PhysRev.73.440
+  doc_url: http://harvest.aps.org/v2/journals/articles/10.1103/PhysRev.108.1070/fulltext
+  doi: 10.1103/PhysRev.108.1070
+  files:
+  - physrev.108.1070.pdf.pdf
+  first_page: '1070'
+  full_journal_title: Physical Review
+  issue: '4'
+  journal: Physical Review
+  last_page: '1076'
+  pages: 1070--1076
+  ref: 10.1103/PhysRev.108.1070
+  title: Discussion of Experimental Proof for the Paradox of Einstein, Rosen, and Podolsky
+  url: http://link.aps.org/article/10.1103/PhysRev.108.1070
+  volume: '108'
+  year: '1957'
+- abbrev_journal_title: Phys. Rev. A
+  author: Spengler, Christoph and Huber, Marcus and Brierley, Stephen and Adaktylos,
+    Theodor and Hiesmayr, Beatrix C.
+  author_list:
+  - given_name: Christoph
+    surname: Spengler
+  - given_name: Marcus
+    surname: Huber
+  - given_name: Stephen
+    surname: Brierley
+  - given_name: Theodor
+    surname: Adaktylos
+  - given_name: Beatrix C.
+    surname: Hiesmayr
+  citations:
+  - doi: 10.1051/jphyscol:1981202
+  - doi: 10.1016/j.physrep.2009.02.004
+  - doi: 10.1103/RevModPhys.81.865
+  - doi: 10.1103/PhysRevLett.95.033601
+  - doi: 10.1103/PhysRevA.75.052318
+  - doi: 10.1142/S0219749910006502
+  - doi: 10.1016/0003-4916(89)90322-9
+  - doi: 10.1016/j.physleta.2007.04.059
+  - doi: 10.1103/PhysRevA.78.042312
+  - doi: 10.1103/PhysRevA.83.062303
+  - doi: 10.1103/PhysRevA.79.052316
+  - doi: 10.1088/1742-6596/254/1/012008
+  - doi: 10.1088/1751-8113/42/24/245305
+  - doi: 10.1103/PhysRevA.79.012109
+  - doi: 10.1063/1.2716990
+  - doi: 10.1088/0031-8949/2011/T143/014010
+  - doi: 10.1103/PhysRevA.83.052332
+  - doi: 10.1103/PhysRevLett.105.030406
+  - doi: 10.1103/PhysRevLett.88.127902
+  - doi: 10.1103/PhysRevA.78.012344
+  - doi: 10.1016/S0375-9601(01)00271-7
+  - doi: 10.1103/PhysRevA.66.012303
+  - doi: 10.1007/s00453-002-0980-7
+  - doi: 10.1142/S0217979206034303
+  - doi: 10.1063/1.1829153
+  - doi: 10.1103/PhysRevA.84.042327
+  - doi: 10.1088/1367-2630/13/5/053047
+  - doi: 10.1103/PhysRevA.78.020303
+  - doi: 10.1103/PhysRevA.79.022104
+  - doi: 10.1088/0305-4470/23/7/013
+  - doi: 10.1103/PhysRevA.72.052331
+  - doi: 10.1103/PhysRevA.59.4206
+  - doi: 10.1088/1751-8113/40/28/S03
+  - doi: 10.1103/PhysRevLett.88.040404
+  - doi: 10.1088/1751-8113/43/38/385306
+  - doi: 10.1063/1.3672064
+  - doi: 10.1103/RevModPhys.77.513
+  - doi: 10.1088/1367-2630/12/5/053002
+  - doi: 10.1103/PhysRevLett.104.210501
+  - doi: 10.1103/PhysRevA.83.040301
+  - doi: 10.1103/PhysRevLett.106.190502
+  - doi: 10.1007/s11128-012-0369-8
+  - doi: 10.1103/PhysRevLett.89.100402
+  - doi: 10.1103/PhysRevA.68.012304
+  - doi: 10.1103/PhysRevA.71.062307
+  - doi: 10.1088/0253-6102/50/2/18
+  - doi: 10.1103/PhysRevLett.87.217901
+  - doi: 10.1080/09500340308234551
+  - doi: 10.1007/s10701-011-9575-y
+  - doi: 10.1103/PhysRevLett.100.140403
+  - doi: 10.1103/PhysRevA.84.062305
+  - doi: 10.1103/PhysRevA.84.062306
+  - doi: 10.1088/1751-8113/41/23/235303
+  - doi: 10.1103/PhysRevLett.95.150504
+  - doi: 10.1103/PhysRevLett.88.017901
+  - doi: 10.1103/PhysRevLett.98.140402
+  - doi: 10.1088/1751-8113/44/6/065304
+  doc_url: http://harvest.aps.org/v2/journals/articles/10.1103/PhysRevA.86.022311/fulltext
+  doi: 10.1103/PhysRevA.86.022311
+  files:
+  - physreva.86.022311.pdf.pdf
+  full_journal_title: Physical Review A
+  issue: '2'
+  journal: Physical Review A
+  ref: 10.1103/PhysRevA.86.022311
+  title: Entanglement detection via mutually unbiased bases
+  url: http://link.aps.org/article/10.1103/PhysRevA.86.022311
+  volume: '86'
+  year: '2012'
+- abbrev_journal_title: Lett Math Phys
+  author: Cirel'son, B. S.
+  author_list:
+  - given_name: B. S.
+    surname: Cirel'son
+  citations: []
+  doc_url: http://www.springerlink.com/index/pdf/10.1007/BF00417500
+  doi: 10.1007/BF00417500
+  files:
+  - cirelson1980.pdf.pdf
+  first_page: '93'
+  full_journal_title: Letters in Mathematical Physics
+  issue: '2'
+  journal: Letters in Mathematical Physics
+  last_page: '100'
+  pages: 93--100
+  ref: 10.1007/BF00417500
+  tags: entanglement bounds
+  title: Quantum generalizations of Bell's inequality
+  volume: '4'
+  year: '1980'
+- abbrev_journal_title: Nature Phys
+  author: Dada, Adetunmise C. and Leach, Jonathan and Buller, Gerald S. and Padgett,
+    Miles J. and Andersson, Erika
+  author_list:
+  - given_name: Adetunmise C.
+    surname: Dada
+  - given_name: Jonathan
+    surname: Leach
+  - given_name: Gerald S.
+    surname: Buller
+  - given_name: Miles J.
+    surname: Padgett
+  - given_name: Erika
+    surname: Andersson
+  citations:
+  - doi: 10.1103/PhysRev.47.777
+  - doi: 10.1103/PhysRevA.69.032313
+  - doi: 10.1103/PhysRevLett.104.060401
+  - doi: 10.1103/PhysRevLett.88.040404
+  - doi: 10.1103/PhysRevA.45.8185
+  - doi: 10.1103/PhysRevLett.75.4337
+  - doi: 10.1103/PhysRevA.69.023811
+  - doi: 10.1103/PhysRevLett.70.1895
+  - doi: 10.1088/0256-307X/27/1/010307
+  - doi: 10.1103/PhysRevLett.69.2881
+  - doi: 10.1103/PhysRevLett.67.661
+  - doi: 10.1103/PhysRevA.59.1829
+  - doi: 10.1103/PhysRevA.68.022312
+  - doi: 10.1038/nature07241
+  - doi: 10.1038/nphys1603
+  - doi: 10.1103/PhysRevLett.89.240401
+  - doi: 10.1103/PhysRevLett.49.91
+  - doi: 10.1364/OE.17.008287
+  - doi: 10.1103/PhysRevA.81.043844
+  - doi: 10.1088/1367-2630/11/10/103024
+  - doi: 10.1103/PhysRevLett.101.120502
+  - doi: 10.1088/1367-2630/8/5/075
+  - doi: 10.1103/PhysRevA.64.024101
+  - doi: 10.1103/PhysRevA.53.2046
+  - doi: 10.1088/1367-2630/7/1/055
+  - doi: 10.1103/PhysRevA.68.050301
+  - doi: 10.1103/PhysRevLett.92.127903
+  - doi: 10.1103/PhysRevLett.91.227902
+  doc_url: http://www.nature.com/articles/nphys1996.pdf
+  doi: 10.1038/nphys1996
+  files:
+  - nphys1996.pdf.pdf
+  - nphys1996-s1.pdf
+  first_page: '677'
+  full_journal_title: Nature Physics
+  issue: '9'
+  journal: Nature Physics
+  last_page: '680'
+  pages: 677--680
+  ref: 10.1038/nphys1996
+  title: Experimental high-dimensional two-photon entanglement and violations of generalized
+    Bell inequalities
+  url: http://www.nature.com/articles/nphys1996
+  volume: '7'
+  year: '2011'
+- abstract: 'We show that k=w+2 mutually unbiased bases can be constructed in any square
+
+    dimension d=s^2 provided that there are w mutually orthogonal Latin squares of
+
+    order s. The construction combines the design-theoretic objects (k,s)-nets
+
+    (which can be constructed from w mutually orthogonal Latin squares of order s
+
+    and vice versa) and generalized Hadamard matrices of size s. Using known lower
+
+    bounds on the asymptotic growth of the number of mutually orthogonal Latin
+
+    squares (based on number theoretic sieving techniques), we obtain that the
+
+    number of mutually unbiased bases in dimensions d=s^2 is greater than s^1/14.8
+
+    for all s but finitely many exceptions. Furthermore, our construction gives
+
+    more mutually orthogonal bases in many non-prime-power dimensions than the
+
+    construction that reduces the problem to prime power dimensions.'
+  archiveprefix: arXiv
+  author: Pawel Wocjan and Thomas Beth
+  eprint: quant-ph/0407081v1
+  file: quant-ph/0407081v1.pdf
+  files:
+  - tmpy-y5mypq.pdf
+  month: Jul
+  primaryclass: quant-ph
+  ref: quant-ph/0407081v1
+  tags: mub
+  title: New Construction of Mutually Unbiased Bases in Square Dimensions
+  type: article
+  url: http://arxiv.org/abs/quant-ph/0407081v1
+  year: '2004'
