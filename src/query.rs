@@ -36,6 +36,12 @@ impl QueryData {
     }
 }
 
+impl Default for QueryData {
+    fn default() -> Self {
+        QueryData { strings: vec!() }
+    }
+}
+
 #[cfg(test)]
 mod test {
     use super::QueryData;
