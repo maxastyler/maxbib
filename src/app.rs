@@ -55,23 +55,13 @@ impl App {
 
         let events = Events::new();
         let (tx, rx) = mpsc::channel();
-        let d = self.data.clone();
-        thread::spawn(move || {
-            let mut ranks: Vec<_> = d
-                .into_iter()
-                .map(|x| {
-                    let r = rank_query(&x, &vec!["entangle", "a", "2"]);
-                    (x, r)
-                })
-                .filter(|(_, r)| !r.is_nan())
-                .collect();
-            ranks.sort_by(|(_, a), (_, b)| a.partial_cmp(b).unwrap());
-            tx.send(ranks);
-        });
-        let ranked_stuff = rx.recv().unwrap();
 
         terminal.hide_cursor()?;
         let mut selected = 0;
+        let mut ranked: (usize, Vec<(QueryData, f64)>) = (0, vec!());
+
+        self.run_query(tx.clone());
+
         loop {
             terminal.draw(|mut f| {
                 let chunks = Layout::default()
@@ -84,16 +74,17 @@ impl App {
                     .split(chunks[0]);
                 SelectableList::default()
                     .items(
-                        &ranked_stuff
+                        &ranked.1
                             .iter()
                             .map(|(x, _)| x.clone().strings[0].clone())
                             .collect::<Vec<String>>(),
                     )
                     .select(Some(selected))
-                    .highlight_symbol(">")
+                    .highlight_symbol(">>")
                     .render(&mut f, list_chunks[0]);
 
-                Paragraph::new(vec![Text::raw(format!("{}", selected))].iter())
+                Paragraph::new(vec![Text::raw(format!("{}", self.search[0]))].iter())
+                    .block(Block::default().borders(Borders::ALL).title("Search:"))
                     .render(&mut f, list_chunks[1]);
             })?;
 
@@ -104,36 +95,52 @@ impl App {
                     }
                     Key::Ctrl('l') | Key::Down => {
                         selected += 1;
-                        if selected >= ranked_stuff.len() {
+                        if selected >= ranked.1.len() {
                             selected = 0;
                         }
                     }
                     Key::Ctrl('k') | Key::Up => {
                         if selected == 0 {
-                            selected = ranked_stuff.len() - 1;
+                            selected = ranked.1.len() - 1;
                         } else {
                             selected -= 1
                         }
-                    },
+                    }
                     Key::Backspace => {
                         self.search[0].pop();
-                    },
+                        self.run_query(tx.clone())
+                    }
+                    Key::Char(x) => {
+                        if x=='\n' {
+                            break;
+                        } else {
+                            self.search[0].push(x);
+                            self.run_query(tx.clone())
+                        }
+                    }
                     _ => {}
                 },
                 _ => (),
+            }
+
+            for result in rx.try_iter() {
+                if result.0 >= ranked.0 {
+                    ranked = result;
+                }
             }
         }
         Ok(())
     }
 
-    pub fn run_query(&self, tx: mpsc::Sender<(usize, Vec<(QueryData, f64)>)>) {
+    pub fn run_query(&mut self, tx: mpsc::Sender<(usize, Vec<(QueryData, f64)>)>) {
         let data = self.data.clone();
+        let search_strings = self.search.clone();
         let current_number = self.search_number;
         thread::spawn(move || {
             let mut ranks: Vec<_> = data
                 .into_iter()
                 .map(|x| {
-                    let r = rank_query(&x, &vec!["entangle", "a", "2"]);
+                    let r = rank_query(&x, &search_strings.iter().map(|x| x.as_str()).collect());
                     (x, r)
                 })
                 .filter(|(_, r)| !r.is_nan())
@@ -143,5 +150,6 @@ impl App {
                 _ => return,
             };
         });
+        self.search_number += 1;
     }
 }
