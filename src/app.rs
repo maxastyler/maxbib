@@ -56,7 +56,7 @@ impl App {
         let mut selected = 0;
         let mut ranked: (usize, Vec<(QueryData, f64)>) = (0, vec![]);
 
-        self.run_query(tx.clone());
+        let mut search_queued = true;
 
         loop {
             terminal.draw(|mut f| {
@@ -82,6 +82,7 @@ impl App {
 
                 Paragraph::new(vec![Text::raw(format!("{}", self.search[0]))].iter())
                     .block(Block::default().borders(Borders::ALL).title("Search:"))
+                    .wrap(true)
                     .render(&mut f, list_chunks[1]);
                 if let Some((i, _)) = ranked.1.get(selected) {
                     Paragraph::new(i.into_paragraph().iter())
@@ -118,15 +119,37 @@ impl App {
                     }
                     Key::Backspace => {
                         self.search[0].pop();
-                        self.run_query(tx.clone())
+                        search_queued = true;
+                    }
+                    Key::Ctrl('w') => {
+                        let mut in_word = false;
+                        loop {
+                            if let Some(c) = self.search[0].pop() {
+                                if (c == '\n') | (c == '\t') | (c == ' ') {
+                                    if in_word {
+                                        self.search[0].push(c);
+                                        break;
+                                    }
+                                } else {
+                                    in_word = true;
+                                }
+                            } else {
+                                break;
+                            }
+                        }
                     }
                     Key::Char(x) => {
                         self.search[0].push(x);
-                        self.run_query(tx.clone())
+                        search_queued = true;
                     }
                     _ => {}
                 },
-                _ => (),
+                Event::Tick => {
+                    if search_queued {
+                        self.run_query(tx.clone());
+                        search_queued = false;
+                    }
+                }
             }
 
             for result in rx.try_iter() {

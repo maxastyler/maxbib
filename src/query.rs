@@ -8,12 +8,15 @@ use tui::widgets::Text;
 /// and the outer vector contains the number of different strings that will be built
 #[derive(Debug, PartialEq, Clone)]
 pub struct QueryData {
+    /// The built query
     pub strings: Vec<String>,
+    /// The id of the bib entry that this query corresponds to
+    pub id: usize,
 }
 
 impl QueryData {
     /// Build a `QueryData` entry from a `serde_yaml` `Mapping` (containing the reference data) and a `Vec` containing `Vec<&str>` which denote the arguments to be combined for each element
-    pub fn build(entry: &Value, arguments: &Vec<Vec<&str>>) -> QueryData {
+    pub fn build(id: usize, entry: &Value, arguments: &Vec<Vec<&str>>) -> QueryData {
         let strings: Vec<String> = arguments
             .iter()
             .map(|strings| {
@@ -30,7 +33,10 @@ impl QueryData {
                 s
             })
             .collect();
-        QueryData { strings: strings }
+        QueryData {
+            strings: strings,
+            id: id,
+        }
     }
 
     pub fn len(&self) -> usize {
@@ -38,13 +44,19 @@ impl QueryData {
     }
 
     pub fn into_paragraph(&self) -> Vec<Text> {
-        self.strings.iter().map(|s| Text::raw(format!("{}", s))).collect::<Vec<_>>()
+        self.strings
+            .iter()
+            .map(|s| Text::raw(format!("{}", s)))
+            .collect::<Vec<_>>()
     }
 }
 
 impl Default for QueryData {
     fn default() -> Self {
-        QueryData { strings: vec![] }
+        QueryData {
+            strings: vec![],
+            id: 0,
+        }
     }
 }
 
@@ -67,6 +79,7 @@ mod test {
             ),
         ]));
         let query = QueryData::build(
+            0,
             &v,
             &vec![vec!["title", "author"], vec!["author", "title", "title"]],
         );
@@ -76,7 +89,8 @@ mod test {
                 strings: vec![
                     String::from("a test title\narthur grunp"),
                     String::from("arthur grunp\na test title\na test title")
-                ]
+                ],
+                id: 0
             }
         )
     }
