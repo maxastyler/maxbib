@@ -4,7 +4,7 @@ use serde_yaml::Value;
 /// The given strings are built from a `Vec<Vec<&str>>` where the inner vector
 /// contains the terms which are to be grouped together into the different strings
 /// and the outer vector contains the number of different strings that will be built
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct QueryData {
     pub strings: Vec<String>,
 }
