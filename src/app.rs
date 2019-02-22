@@ -1,14 +1,13 @@
 use std::sync::mpsc;
 use std::thread;
 
-use termion::clear;
 use termion::event::Key;
 use termion::input::MouseTerminal;
 use termion::raw::IntoRawMode;
 use termion::screen::AlternateScreen;
 use tui::backend::TermionBackend;
 use tui::layout::{Constraint, Direction, Layout};
-use tui::widgets::{Block, Borders, List, Paragraph, SelectableList, Text, Widget};
+use tui::widgets::{Block, Borders, Paragraph, SelectableList, Text, Widget};
 use tui::Terminal;
 
 use crate::event::{Event, Events};
@@ -17,7 +16,6 @@ use crate::search::rank_query;
 
 pub struct App {
     data: Vec<QueryData>,
-    selected: Option<usize>,
     search: Vec<String>,
     search_number: usize,
 }
@@ -26,7 +24,6 @@ impl Default for App {
     fn default() -> Self {
         App {
             data: vec![],
-            selected: None,
             search: vec![],
             search_number: 0,
         }
@@ -38,7 +35,6 @@ impl From<Vec<QueryData>> for App {
         let length = data.get(0).and_then(|x| Some(x.len())).unwrap_or(0);
         App {
             data: data,
-            selected: None,
             search: vec![String::new(); length],
             search_number: 0,
         }
@@ -94,6 +90,7 @@ impl App {
                                 .borders(Borders::ALL)
                                 .title("Selected item:"),
                         )
+                        .wrap(true)
                         .render(&mut f, chunks[1]);
                 }
             })?;
