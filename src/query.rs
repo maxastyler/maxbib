@@ -1,5 +1,7 @@
 use serde_yaml::Value;
 
+use tui::widgets::Text;
+
 /// QueryData is the set of strings that are to be searched through
 /// The given strings are built from a `Vec<Vec<&str>>` where the inner vector
 /// contains the terms which are to be grouped together into the different strings
@@ -34,11 +36,15 @@ impl QueryData {
     pub fn len(&self) -> usize {
         self.strings.len()
     }
+
+    pub fn into_paragraph(&self) -> Vec<Text> {
+        self.strings.iter().map(|s| Text::raw(format!("{}", s))).collect::<Vec<_>>()
+    }
 }
 
 impl Default for QueryData {
     fn default() -> Self {
-        QueryData { strings: vec!() }
+        QueryData { strings: vec![] }
     }
 }
 

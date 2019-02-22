@@ -3,7 +3,7 @@ use std::sync::mpsc;
 use std::thread;
 use std::time::Duration;
 
-use termion::event::Key;
+use termion::event::{Key, Event as TEvent};
 use termion::input::TermRead;
 
 pub enum Event<I> {
@@ -45,16 +45,17 @@ impl Events {
             let tx = tx.clone();
             thread::spawn(move || {
                 let stdin = io::stdin();
-                for evt in stdin.keys() {
+                for evt in stdin.events() {
                     match evt {
-                        Ok(key) => {
+                        Ok(TEvent::Key(key)) => {
                             if let Err(_) = tx.send(Event::Input(key)) {
                                 return;
                             }
                             if key == config.exit_key {
                                 return;
                             }
-                        }
+                        },
+                        Ok(_) => {}
                         Err(_) => {}
                     }
                 }

@@ -28,7 +28,7 @@ use tui::layout::{Layout, Constraint, Direction};
 
 fn main() -> Result<()> {
     let v = serde_yaml::from_str::<Value>(include_str!("/home/max/git/maxbib/references.yaml")).unwrap();
-    let v_iter = v.as_sequence().unwrap().iter().cycle().take(10);
+    let v_iter = v.as_sequence().unwrap().iter().cycle().take(100_00);
     // for (i, _) in v_iter.enumerate() {
     //     // println!("{:?}", i);
     // }

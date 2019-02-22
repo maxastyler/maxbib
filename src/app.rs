@@ -58,7 +58,7 @@ impl App {
 
         terminal.hide_cursor()?;
         let mut selected = 0;
-        let mut ranked: (usize, Vec<(QueryData, f64)>) = (0, vec!());
+        let mut ranked: (usize, Vec<(QueryData, f64)>) = (0, vec![]);
 
         self.run_query(tx.clone());
 
@@ -74,7 +74,8 @@ impl App {
                     .split(chunks[0]);
                 SelectableList::default()
                     .items(
-                        &ranked.1
+                        &ranked
+                            .1
                             .iter()
                             .map(|(x, _)| x.clone().strings[0].clone())
                             .collect::<Vec<String>>(),
@@ -86,6 +87,15 @@ impl App {
                 Paragraph::new(vec![Text::raw(format!("{}", self.search[0]))].iter())
                     .block(Block::default().borders(Borders::ALL).title("Search:"))
                     .render(&mut f, list_chunks[1]);
+                if let Some((i, _)) = ranked.1.get(selected) {
+                    Paragraph::new(i.into_paragraph().iter())
+                        .block(
+                            Block::default()
+                                .borders(Borders::ALL)
+                                .title("Selected item:"),
+                        )
+                        .render(&mut f, chunks[1]);
+                }
             })?;
 
             match events.next().unwrap() {
@@ -93,7 +103,7 @@ impl App {
                     Key::Ctrl('c') => {
                         break;
                     }
-                    Key::Ctrl('l') | Key::Down => {
+                    Key::Char('\n') | Key::Down => {
                         selected += 1;
                         if selected >= ranked.1.len() {
                             selected = 0;
@@ -106,17 +116,16 @@ impl App {
                             selected -= 1
                         }
                     }
+                    Key::Ctrl('l') => {
+                        break;
+                    }
                     Key::Backspace => {
                         self.search[0].pop();
                         self.run_query(tx.clone())
                     }
                     Key::Char(x) => {
-                        if x=='\n' {
-                            break;
-                        } else {
-                            self.search[0].push(x);
-                            self.run_query(tx.clone())
-                        }
+                        self.search[0].push(x);
+                        self.run_query(tx.clone())
                     }
                     _ => {}
                 },
