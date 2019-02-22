@@ -18,9 +18,10 @@ use crate::query::*;
 fn main() -> Result<()> {
     let v = serde_yaml::from_str::<Value>(include_str!("/home/max/git/maxbib/references.yaml"))
         .unwrap();
-    let v_iter = v.as_sequence().unwrap().iter().cycle().enumerate().take(10_000);
+    let v_iter = v.as_sequence().unwrap().iter().enumerate().cycle().take(10_000);
     let arguments = vec![vec!["title", "author"], vec!["journal"], vec!["year"]];
     let queries: Vec<_> = v_iter.map(|(i, x)| QueryData::build(i, x, &arguments)).collect();
     let mut a = App::from(queries);
-    a.run()
+    println!("{}", a.run()?);
+    Ok(())
 }

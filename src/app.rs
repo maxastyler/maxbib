@@ -42,7 +42,7 @@ impl From<Vec<QueryData>> for App {
 }
 
 impl App {
-    pub fn run(&mut self) -> std::io::Result<()> {
+    pub fn run(&mut self) -> std::io::Result<usize> {
         let stdout = std::io::stdout().into_raw_mode()?;
         let stdout = AlternateScreen::from(stdout);
         let stdout = MouseTerminal::from(stdout);
@@ -137,6 +137,7 @@ impl App {
                                 break;
                             }
                         }
+                        search_queued = true;
                     }
                     Key::Char(x) => {
                         self.search[0].push(x);
@@ -158,7 +159,10 @@ impl App {
                 }
             }
         }
-        Ok(())
+        match ranked.1.get(selected) {
+            Some((q, _)) => Ok(q.id),
+            None => Err(std::io::Error::from(std::io::ErrorKind::Other)),
+        }
     }
 
     pub fn run_query(&mut self, tx: mpsc::Sender<(usize, Vec<(QueryData, f64)>)>) {
