@@ -103,7 +103,7 @@ mod test {
             Value::String(String::from("long")),
             long_str,
         )]));
-        let query = QueryData::build(&v, &vec![vec!["long", "long"]]);
+        let query = QueryData::build(0, &v, &vec![vec!["long", "long"]]);
         assert_eq!(query.strings, vec![shorter_str]);
     }
 
