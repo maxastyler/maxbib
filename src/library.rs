@@ -1,6 +1,6 @@
 use glob::{glob, PatternError};
 
-pub fn load_library(path: &str) -> Result<Vec<serde_yaml::Value>, PatternError> {
+pub fn load_library(path: &str) -> Result<Vec<(usize, serde_yaml::Value)>, PatternError> {
     Ok(glob(&format!("{}/**/*.yaml", path))?
         .filter_map(|p| match p {
             Ok(path) => {
@@ -9,5 +9,5 @@ pub fn load_library(path: &str) -> Result<Vec<serde_yaml::Value>, PatternError> 
             }
             Err(_) => None,
         })
-        .collect::<Vec<_>>())
+        .enumerate().collect::<Vec<_>>())
 }

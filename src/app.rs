@@ -14,34 +14,30 @@ use crate::event::{Event, Events};
 use crate::query::QueryData;
 use crate::search::rank_query;
 
-pub struct App {
+#[derive(Default)]
+pub struct App<'a> {
     data: Vec<QueryData>,
     search: Vec<String>,
     search_number: usize,
+    ranked: (usize, Vec<(QueryData, f64)>),
+    selected_item: Option<usize>,
+    selected_search_box: Option<usize>,
+    search_categories: Vec<Vec<&'a str>>,
 }
 
-impl Default for App {
-    fn default() -> Self {
-        App {
-            data: vec![],
-            search: vec![],
-            search_number: 0,
-        }
-    }
-}
-
-impl From<Vec<QueryData>> for App {
+impl<'a> From<Vec<QueryData>> for App<'a> {
     fn from(data: Vec<QueryData>) -> Self {
         let length = data.get(0).and_then(|x| Some(x.len())).unwrap_or(0);
         App {
             data: data,
             search: vec![String::new(); length],
-            search_number: 0,
+            ..Default::default()
         }
     }
 }
 
-impl App {
+impl<'a> App<'a> {
+    /// The main interactive app loop
     pub fn run(&mut self) -> std::io::Result<usize> {
         let stdout = std::io::stdout().into_raw_mode()?;
         let stdout = AlternateScreen::from(stdout);
@@ -70,7 +66,8 @@ impl App {
                     .split(chunks[0]);
                 SelectableList::default()
                     .items(
-                        &ranked
+                        &self
+                            .ranked
                             .1
                             .iter()
                             .map(|(x, _)| x.clone().strings[0].clone())
@@ -154,17 +151,35 @@ impl App {
             }
 
             for result in rx.try_iter() {
-                if result.0 >= ranked.0 {
-                    ranked = result;
+                if result.0 >= self.ranked.0 {
+                    self.ranked = result;
+                    let l = self.ranked.1.len();
+                    match self.selected_item {
+                        Some(selected) => {
+                            if selected >= l {
+                                if l > 0 {
+                                    self.selected_item = Some(l - 1);
+                                } else {
+                                    self.selected_item = None;
+                                }
+                            }
+                        }
+                        None => {
+                            if l > 0 {
+                                self.selected_item = Some(0);
+                            }
+                        }
+                    }
                 }
             }
         }
-        match ranked.1.get(selected) {
+        match self.ranked.1.get(selected) {
             Some((q, _)) => Ok(q.id),
             None => Err(std::io::Error::from(std::io::ErrorKind::Other)),
         }
     }
 
+    /// Run a search in a separate thread, sending the result back into an mpsc channel
     pub fn run_query(&mut self, tx: mpsc::Sender<(usize, Vec<(QueryData, f64)>)>) {
         let data = self.data.clone();
         let search_strings = self.search.clone();
