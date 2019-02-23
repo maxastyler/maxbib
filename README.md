@@ -22,3 +22,6 @@ These can be combined as well, eg. searching
 - Title + Year
 - Journal + Authors
 - Abstract
+
+## TODO
+Need to add in searching over the different fields
