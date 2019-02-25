@@ -21,8 +21,9 @@ pub struct App<'a> {
     search_number: usize,
     ranked: (usize, Vec<(QueryData, f64)>),
     selected_item: Option<usize>,
-    selected_search_box: Option<usize>,
+    selected_search_box: usize,
     search_categories: Vec<Vec<&'a str>>,
+    search_queued: bool,
 }
 
 impl<'a> From<Vec<QueryData>> for App<'a> {
@@ -49,49 +50,11 @@ impl<'a> App<'a> {
         let (tx, rx) = mpsc::channel();
 
         terminal.hide_cursor()?;
-        let mut selected = 0;
-        let mut ranked: (usize, Vec<(QueryData, f64)>) = (0, vec![]);
 
-        let mut search_queued = true;
+        self.search_queued = true;
 
         loop {
-            terminal.draw(|mut f| {
-                let chunks = Layout::default()
-                    .direction(Direction::Horizontal)
-                    .constraints([Constraint::Percentage(50), Constraint::Percentage(50)].as_ref())
-                    .split(f.size());
-                let list_chunks = Layout::default()
-                    .direction(Direction::Vertical)
-                    .constraints([Constraint::Percentage(80), Constraint::Percentage(20)].as_ref())
-                    .split(chunks[0]);
-                SelectableList::default()
-                    .items(
-                        &self
-                            .ranked
-                            .1
-                            .iter()
-                            .map(|(x, _)| x.clone().strings[0].clone())
-                            .collect::<Vec<String>>(),
-                    )
-                    .select(Some(selected))
-                    .highlight_symbol(">>")
-                    .render(&mut f, list_chunks[0]);
-
-                Paragraph::new(vec![Text::raw(format!("{}", self.search[0]))].iter())
-                    .block(Block::default().borders(Borders::ALL).title("Search:"))
-                    .wrap(true)
-                    .render(&mut f, list_chunks[1]);
-                if let Some((i, _)) = ranked.1.get(selected) {
-                    Paragraph::new(i.into_paragraph().iter())
-                        .block(
-                            Block::default()
-                                .borders(Borders::ALL)
-                                .title("Selected item:"),
-                        )
-                        .wrap(true)
-                        .render(&mut f, chunks[1]);
-                }
-            })?;
+            self.render(&mut terminal)?;
 
             match events.next().unwrap() {
                 Event::Input(input) => match input {
@@ -99,84 +62,95 @@ impl<'a> App<'a> {
                         break;
                     }
                     Key::Char('\n') | Key::Down => {
-                        selected += 1;
-                        if selected >= ranked.1.len() {
-                            selected = 0;
-                        }
+                        self.decrement_selected();
                     }
                     Key::Ctrl('k') | Key::Up => {
-                        if selected == 0 {
-                            selected = ranked.1.len() - 1;
-                        } else {
-                            selected -= 1
-                        }
+                        self.increment_selected();
                     }
                     Key::Ctrl('l') => {
                         break;
                     }
                     Key::Backspace => {
-                        self.search[0].pop();
-                        search_queued = true;
+                        self.remove_letter();
                     }
                     Key::Ctrl('w') => {
-                        let mut in_word = false;
-                        loop {
-                            if let Some(c) = self.search[0].pop() {
-                                if (c == '\n') | (c == '\t') | (c == ' ') {
-                                    if in_word {
-                                        self.search[0].push(c);
-                                        break;
-                                    }
-                                } else {
-                                    in_word = true;
-                                }
-                            } else {
-                                break;
-                            }
-                        }
-                        search_queued = true;
+                        self.remove_word();
                     }
                     Key::Char(x) => {
-                        self.search[0].push(x);
-                        search_queued = true;
+                        self.add_letter(x);
                     }
                     _ => {}
                 },
                 Event::Tick => {
-                    if search_queued {
+                    if self.search_queued {
                         self.run_query(tx.clone());
-                        search_queued = false;
+                        self.search_queued = false;
                     }
                 }
             }
 
-            for result in rx.try_iter() {
-                if result.0 >= self.ranked.0 {
-                    self.ranked = result;
-                    let l = self.ranked.1.len();
-                    match self.selected_item {
-                        Some(selected) => {
-                            if selected >= l {
-                                if l > 0 {
-                                    self.selected_item = Some(l - 1);
-                                } else {
-                                    self.selected_item = None;
-                                }
-                            }
-                        }
-                        None => {
-                            if l > 0 {
-                                self.selected_item = Some(0);
-                            }
-                        }
-                    }
-                }
-            }
+            self.check_for_search_results(&rx);
         }
-        match self.ranked.1.get(selected) {
-            Some((q, _)) => Ok(q.id),
+        match self.selected_item {
+            Some(s) => match self.ranked.1.get(s) {
+                Some((q, _)) => Ok(q.id),
+                None => Err(std::io::Error::from(std::io::ErrorKind::Other)),
+            },
             None => Err(std::io::Error::from(std::io::ErrorKind::Other)),
         }
+    }
+
+    fn increment_selected(&mut self) {
+        self.selected_item = self.selected_item.map(|x| {
+            if x + 1 >= self.ranked.1.len() {
+                0
+            } else {
+                x + 1
+            }
+        });
+    }
+
+    fn decrement_selected(&mut self) {
+        self.selected_item = self.selected_item.map(|x| {
+            if x == 0 {
+                self.ranked.1.len() - 1
+            } else {
+                x - 1
+            }
+        });
+    }
+
+    fn remove_letter(&mut self) {
+        if let Some(ref mut s) = self.search.get_mut(self.selected_search_box) {
+            s.pop();
+            self.search_queued = true;
+        }
+    }
+
+    fn add_letter(&mut self, letter: char) {
+        if let Some(ref mut s) = self.search.get_mut(self.selected_search_box) {
+            s.push(letter);
+            self.search_queued = true;
+        }
+    }
+
+    fn remove_word(&mut self) {
+        let mut in_word = false;
+        loop {
+            if let Some(c) = self.search[0].pop() {
+                if (c == '\n') | (c == '\t') | (c == ' ') {
+                    if in_word {
+                        self.search[0].push(c);
+                        break;
+                    }
+                } else {
+                    in_word = true;
+                }
+            } else {
+                break;
+            }
+        }
+        self.search_queued = true;
     }
 
     /// Run a search in a separate thread, sending the result back into an mpsc channel
@@ -199,5 +173,80 @@ impl<'a> App<'a> {
             };
         });
         self.search_number += 1;
+    }
+
+    fn check_for_search_results(
+        &mut self,
+        channel: &mpsc::Receiver<(usize, Vec<(QueryData, f64)>)>,
+    ) {
+        for result in channel.try_iter() {
+            if result.0 >= self.ranked.0 {
+                self.ranked = result;
+                let l = self.ranked.1.len();
+                match self.selected_item {
+                    Some(selected) => {
+                        if selected >= l {
+                            if l > 0 {
+                                self.selected_item = Some(l - 1);
+                            } else {
+                                self.selected_item = None;
+                            }
+                        }
+                    }
+                    None => {
+                        if l > 0 {
+                            self.selected_item = Some(0);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /// Render the interface
+    fn render<Backend>(&self, terminal: &mut tui::Terminal<Backend>) -> std::io::Result<()>
+    where
+        Backend: tui::backend::Backend,
+    {
+        terminal.draw(|mut f| {
+            let chunks = Layout::default()
+                .direction(Direction::Horizontal)
+                .constraints([Constraint::Percentage(50), Constraint::Percentage(50)].as_ref())
+                .split(f.size());
+            let list_chunks = Layout::default()
+                .direction(Direction::Vertical)
+                .constraints([Constraint::Percentage(80), Constraint::Percentage(20)].as_ref())
+                .split(chunks[0]);
+            SelectableList::default()
+                .items(
+                    &self
+                        .ranked
+                        .1
+                        .iter()
+                        .map(|(x, _)| x.clone().strings[0].clone())
+                        .collect::<Vec<String>>(),
+                )
+                .select(self.selected_item)
+                .highlight_symbol(">>")
+                .render(&mut f, list_chunks[0]);
+
+            Paragraph::new(vec![Text::raw(format!("{}", self.search[0]))].iter())
+                .block(Block::default().borders(Borders::ALL).title("Search:"))
+                .wrap(true)
+                .render(&mut f, list_chunks[1]);
+            if let Some(s) = self.selected_item {
+                if let Some((i, _)) = self.ranked.1.get(s) {
+                    Paragraph::new(i.into_paragraph().iter())
+                        .block(
+                            Block::default()
+                                .borders(Borders::ALL)
+                                .title("Selected item:"),
+                        )
+                        .wrap(true)
+                        .render(&mut f, chunks[1]);
+                }
+            }
+        })?;
+        Ok(())
     }
 }
