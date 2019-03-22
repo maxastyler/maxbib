@@ -85,6 +85,9 @@ impl<'a> App<'a> {
                     Key::Ctrl('w') => {
                         self.remove_word();
                     }
+                    Key::Ctrl('g') => {
+                        self.clear_all_searches();
+                    }
                     Key::Char(x) => {
                         self.add_letter(x);
                     }
@@ -172,6 +175,13 @@ impl<'a> App<'a> {
             }
             self.search_queued = true;
         }
+    }
+
+    fn clear_all_searches(&mut self) {
+        for s in self.search.iter_mut() {
+            s.clear();
+        }
+        self.search_queued = true;
     }
 
     /// Run a search in a separate thread, sending the result back into an mpsc channel
