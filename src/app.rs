@@ -26,12 +26,13 @@ pub struct App<'a> {
     search_queued: bool,
 }
 
-impl<'a> From<Vec<QueryData>> for App<'a> {
-    fn from(data: Vec<QueryData>) -> Self {
-        let length = data.get(0).and_then(|x| Some(x.len())).unwrap_or(0);
+impl<'a> From<(Vec<QueryData>, Vec<Vec<&'a str>>)> for App<'a> {
+    fn from(data: (Vec<QueryData>, Vec<Vec<&'a str>>)) -> Self {
+        let length = data.0.get(0).and_then(|x| Some(x.len())).unwrap_or(0);
         App {
-            data: data,
+            data: data.0,
             search: vec![String::new(); length],
+            search_categories: data.1,
             ..Default::default()
         }
     }
@@ -62,13 +63,19 @@ impl<'a> App<'a> {
                         break;
                     }
                     Key::Char('\n') | Key::Down => {
-                        self.decrement_selected();
+                        self.increment_selected();
                     }
                     Key::Ctrl('k') | Key::Up => {
-                        self.increment_selected();
+                        self.decrement_selected();
                     }
                     Key::Ctrl('l') => {
                         break;
+                    }
+                    Key::Ctrl('n') => {
+                        self.increment_search_category();
+                    }
+                    Key::Ctrl('p') => {
+                        self.decrement_search_category();
                     }
                     Key::Backspace => {
                         self.remove_letter();
@@ -97,6 +104,16 @@ impl<'a> App<'a> {
                 None => Err(std::io::Error::from(std::io::ErrorKind::Other)),
             },
             None => Err(std::io::Error::from(std::io::ErrorKind::Other)),
+        }
+    }
+    fn increment_search_category(&mut self) {
+        self.selected_search_box = (self.selected_search_box + 1) % self.search_categories.len();
+    }
+
+    fn decrement_search_category(&mut self) {
+        match self.selected_search_box {
+            0 => self.selected_search_box = self.search_categories.len() - 1,
+            _ => self.selected_search_box -= 1,
         }
     }
 
@@ -135,22 +152,24 @@ impl<'a> App<'a> {
     }
 
     fn remove_word(&mut self) {
-        let mut in_word = false;
-        loop {
-            if let Some(c) = self.search[0].pop() {
-                if (c == '\n') | (c == '\t') | (c == ' ') {
-                    if in_word {
-                        self.search[0].push(c);
-                        break;
+        if let Some(ref mut s) = self.search.get_mut(self.selected_search_box) {
+            let mut in_word = false;
+            loop {
+                if let Some(c) = s.pop() {
+                    if (c == '\n') | (c == '\t') | (c == ' ') {
+                        if in_word {
+                            s.push(c);
+                            break;
+                        }
+                    } else {
+                        in_word = true;
                     }
                 } else {
-                    in_word = true;
+                    break;
                 }
-            } else {
-                break;
             }
+            self.search_queued = true;
         }
-        self.search_queued = true;
     }
 
     /// Run a search in a separate thread, sending the result back into an mpsc channel
@@ -209,14 +228,18 @@ impl<'a> App<'a> {
         Backend: tui::backend::Backend,
     {
         terminal.draw(|mut f| {
-            let chunks = Layout::default()
-                .direction(Direction::Horizontal)
-                .constraints([Constraint::Percentage(50), Constraint::Percentage(50)].as_ref())
-                .split(f.size());
-            let list_chunks = Layout::default()
+            let main_frame = Layout::default()
                 .direction(Direction::Vertical)
                 .constraints([Constraint::Percentage(80), Constraint::Percentage(20)].as_ref())
-                .split(chunks[0]);
+                .split(f.size());
+            let selection_and_view = Layout::default()
+                .direction(Direction::Horizontal)
+                .constraints([Constraint::Percentage(50), Constraint::Percentage(50)].as_ref())
+                .split(main_frame[0]);
+            let searches = Layout::default()
+                .direction(Direction::Horizontal)
+                .constraints(vec![Constraint::Percentage(100u16/(self.search_categories.len() as u16)); self.search_categories.len()].as_ref())
+                .split(main_frame[1]);
             SelectableList::default()
                 .items(
                     &self
@@ -228,12 +251,26 @@ impl<'a> App<'a> {
                 )
                 .select(self.selected_item)
                 .highlight_symbol(">>")
-                .render(&mut f, list_chunks[0]);
+                .render(&mut f, selection_and_view[0]);
 
-            Paragraph::new(vec![Text::raw(format!("{}", self.search[0]))].iter())
-                .block(Block::default().borders(Borders::ALL).title("Search:"))
-                .wrap(true)
-                .render(&mut f, list_chunks[1]);
+            for (i, b) in searches.iter().enumerate() {
+                if i == self.selected_search_box {
+                    Paragraph::new(vec![Text::raw(format!("{}", self.search[i]))].iter())
+                        .block(
+                            Block::default()
+                                .borders(Borders::ALL)
+                                .title(&format!("***{}***", self.search_categories[i][0])),
+                        )
+                        .wrap(true)
+                        .render(&mut f, *b);
+                } else {
+                    Paragraph::new(vec![Text::raw(format!("{}", self.search[i]))].iter())
+                        .block(Block::default().borders(Borders::ALL).title(self.search_categories[i][0]))
+                        .wrap(true)
+                        .render(&mut f, *b);
+                }
+            }
+
             if let Some(s) = self.selected_item {
                 if let Some((i, _)) = self.ranked.1.get(s) {
                     Paragraph::new(i.into_paragraph().iter())
@@ -243,7 +280,7 @@ impl<'a> App<'a> {
                                 .title("Selected item:"),
                         )
                         .wrap(true)
-                        .render(&mut f, chunks[1]);
+                        .render(&mut f, selection_and_view[1]);
                 }
             }
         })?;

@@ -20,12 +20,13 @@ use crate::query::*;
 
 fn main() -> Result<()> {
     let lib = load_library("/home/max/papers/").unwrap();
-    // let arguments = vec![vec!["title"], vec!["author"], vec!["journal"], vec!["year"]];
-    let arguments = vec![vec!["title"]];
+    let arguments = vec![vec!["title"], vec!["author"], vec!["journal"], vec!["year"]];
+    // let arguments = vec![vec!["title"]];
     let queries: Vec<_> = lib.iter()
         .map(|(i, x)| QueryData::build(*i, x, &arguments))
         .collect();
-    let mut a = App::from(queries);
+    let mut a = App::from((queries, arguments));
     println!("{}", a.run()?);
+    println!("Hello");
     Ok(())
 }
