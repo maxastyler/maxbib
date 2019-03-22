@@ -238,7 +238,13 @@ impl<'a> App<'a> {
                 .split(main_frame[0]);
             let searches = Layout::default()
                 .direction(Direction::Horizontal)
-                .constraints(vec![Constraint::Percentage(100u16/(self.search_categories.len() as u16)); self.search_categories.len()].as_ref())
+                .constraints(
+                    vec![
+                        Constraint::Percentage(100u16 / (self.search_categories.len() as u16));
+                        self.search_categories.len()
+                    ]
+                    .as_ref(),
+                )
                 .split(main_frame[1]);
             SelectableList::default()
                 .items(
@@ -265,7 +271,11 @@ impl<'a> App<'a> {
                         .render(&mut f, *b);
                 } else {
                     Paragraph::new(vec![Text::raw(format!("{}", self.search[i]))].iter())
-                        .block(Block::default().borders(Borders::ALL).title(self.search_categories[i][0]))
+                        .block(
+                            Block::default()
+                                .borders(Borders::ALL)
+                                .title(self.search_categories[i][0]),
+                        )
                         .wrap(true)
                         .render(&mut f, *b);
                 }

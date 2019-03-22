@@ -46,7 +46,7 @@ impl QueryData {
     pub fn into_paragraph(&self) -> Vec<Text> {
         self.strings
             .iter()
-            .map(|s| Text::raw(format!("{}", s)))
+            .map(|s| Text::raw(format!("{}\n", s)))
             .collect::<Vec<_>>()
     }
 }
