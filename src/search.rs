@@ -1,3 +1,4 @@
+//! Functions related to searching through a set of strings with queries
 use std::f64::NAN;
 
 use rff::match_and_score;

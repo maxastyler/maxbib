@@ -1,3 +1,4 @@
+//! An event in the main interactive app. Based on the tui-rs event struct.
 use std::io;
 use std::sync::mpsc;
 use std::thread;
@@ -6,6 +7,7 @@ use std::time::Duration;
 use termion::event::{Key, Event as TEvent};
 use termion::input::TermRead;
 
+/// An event; either an Input or a Tick
 pub enum Event<I> {
     Input(I),
     Tick,
@@ -19,6 +21,7 @@ pub struct Events {
     tick_handle: thread::JoinHandle<()>,
 }
 
+/// The config for the event class - decides what the exit key is and what the tick rate is
 #[derive(Debug, Clone, Copy)]
 pub struct Config {
     pub exit_key: Key,
@@ -35,10 +38,12 @@ impl Default for Config {
 }
 
 impl Events {
+    /// create an event object with a default config
     pub fn new() -> Events {
         Events::with_config(Config::default())
     }
 
+    /// Create an event with the given config
     pub fn with_config(config: Config) -> Events {
         let (tx, rx) = mpsc::channel();
         let input_handle = {
@@ -78,6 +83,7 @@ impl Events {
         }
     }
 
+    /// Find the next event
     pub fn next(&self) -> Result<Event<Key>, mpsc::RecvError> {
         self.rx.recv()
     }

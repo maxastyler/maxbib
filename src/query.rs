@@ -1,3 +1,4 @@
+//! The query module, which contains functions to do with Queries, which are searched on
 use serde_yaml::Value;
 
 use tui::widgets::Text;

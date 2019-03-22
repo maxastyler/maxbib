@@ -1,3 +1,4 @@
+//! This module contains the main app that lets the user search through a set of reference queries
 use std::sync::mpsc;
 use std::thread;
 
@@ -14,6 +15,7 @@ use crate::event::{Event, Events};
 use crate::query::QueryData;
 use crate::search::rank_query;
 
+/// The main App structure
 #[derive(Default)]
 pub struct App<'a> {
     data: Vec<QueryData>,
@@ -186,7 +188,7 @@ impl<'a> App<'a> {
                 })
                 .filter(|(_, r)| !r.is_nan())
                 .collect();
-            ranks.sort_by(|(_, a), (_, b)| a.partial_cmp(b).unwrap());
+            ranks.sort_by(|(_, a), (_, b)| (-a).partial_cmp(&-b).unwrap());
             match tx.send((current_number, ranks)) {
                 _ => return,
             };
