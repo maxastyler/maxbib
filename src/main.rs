@@ -12,7 +12,7 @@ use clap::{Arg, App as ClapApp, SubCommand};
 
 pub mod app;
 pub mod event;
-pub mod library ;
+pub mod library;
 pub mod query;
 pub mod search;
 
